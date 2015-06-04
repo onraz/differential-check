@@ -29,9 +29,10 @@ public class Diff
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for (DiffEntry diff : diffEntryList)
+        sb.append("Size: " + diffEntryList.size());
+        for (DiffEntry diffEntry : diffEntryList)
         {
-            sb.append(diff);
+            sb.append("Diff>" + diffEntry);
         }
         return sb.toString();
     }

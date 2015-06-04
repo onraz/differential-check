@@ -23,8 +23,8 @@ public class DfChecker extends AbstractMojo
     @Parameter( property = "target", defaultValue = "refs/heads/master" )
     private String target;
 
-    @Parameter( property = "checkstyleReport", required = true)
-    private String checkstyleReport;
+//    @Parameter( property = "checkstyleReport", required = true)
+//    private String checkstyleReport;
 
     public void execute() throws MojoExecutionException, MojoFailureException
     {
@@ -35,7 +35,7 @@ public class DfChecker extends AbstractMojo
         getLog().info("Computing diff between source: " + source + " and target: " + target);
         DiffCalculator diffCalculator = new DiffCalculator(source, target);
         Diff diff = diffCalculator.calculate();
-        getLog().info(diff.toString());
+        getLog().info("Diffing--->" + diff.toString());
     }
 
     public static void main(String[] args) {
