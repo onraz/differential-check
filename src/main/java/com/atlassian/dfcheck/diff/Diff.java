@@ -1,8 +1,15 @@
 package com.atlassian.dfcheck.diff;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+import com.atlassian.dfcheck.util.RepositoryUtil;
+
+import org.apache.commons.lang3.Range;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 
 public class Diff
 {
@@ -29,11 +36,30 @@ public class Diff
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("Size: " + diffEntryList.size());
+        Map<String, List<Range<Integer>>> edits = FileEditDiffCollector.collectEdits(diffEntryList);
+        for (Map.Entry<String, List<Range<Integer>>> entry : edits.entrySet())
+        {
+            sb.append(entry.getKey() + "-->" + entry.getValue() + "\n");
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DiffFormatter formatter = new DiffFormatter(out);
+        formatter.setRepository(RepositoryUtil.getLocalRepository());
+        formatter.setContext(0);
+
         for (DiffEntry diffEntry : diffEntryList)
         {
-            sb.append("Diff>" + diffEntry);
+            try
+            {
+                formatter.format(diffEntry);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Error formatting diff entry: " + diffEntry, e);
+            }
         }
-        return sb.toString();
+        return sb.toString() + "\n\n" + new String(out.toByteArray());
     }
+
+    ;
 }

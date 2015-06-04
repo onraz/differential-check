@@ -32,7 +32,7 @@ public class DfChecker extends AbstractMojo
         {
             source = RepositoryUtil.getLocalBranch();
         }
-        getLog().info("Computing diff between source: " + source + " and target: " + target);
+        getLog().info("Computing diff between source: [" + source + "] and target: [" + target + "]");
         DiffCalculator diffCalculator = new DiffCalculator(source, target);
         Diff diff = diffCalculator.calculate();
         getLog().info("Diffing--->" + diff.toString());
