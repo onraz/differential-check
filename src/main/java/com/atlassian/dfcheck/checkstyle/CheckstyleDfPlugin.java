@@ -15,7 +15,6 @@ import javax.xml.xpath.XPathFactory;
 import com.atlassian.dfcheck.DfPlugin;
 import com.atlassian.dfcheck.Violation;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -50,16 +49,16 @@ public class CheckstyleDfPlugin implements DfPlugin
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleReport);
             XPath xpath = XPathFactory.newInstance().newXPath();
 
-            NodeList fileNodes = document.getDocumentElement().getChildNodes();
+            NodeList fileNodes = document.getDocumentElement().getElementsByTagName("file");
+
             for (int i = 0; i < fileNodes.getLength(); i++)
             {
                 Node fileNode = fileNodes.item(i);
-                NodeList errors = (NodeList) xpath.evaluate("/error[@severity='error']", fileNode, XPathConstants.NODESET);
+                NodeList errors = (NodeList) xpath.evaluate("error[@severity='error']", fileNode, XPathConstants.NODESET);
 
                 if (errors.getLength() > 0)
                 {
                     String fileName = fileNode.getAttributes().getNamedItem("name").getNodeValue();
-
                     Set<Violation> styleViolations = Sets.newHashSet();
 
                     for (int j = 0; j < errors.getLength(); j++)
@@ -70,7 +69,7 @@ public class CheckstyleDfPlugin implements DfPlugin
                         String message = error.getAttributes().getNamedItem("message").getNodeValue();
                         String source = error.getAttributes().getNamedItem("source").getNodeValue();
 
-                        styleViolations.add(new Violation(fileName, linenum, message, source));
+                        styleViolations.add(new Violation(fileName, linenum, message, "Checkstyle:" + source));
                     }
 
                     fileViolations.put(fileName, styleViolations);
@@ -82,21 +81,19 @@ public class CheckstyleDfPlugin implements DfPlugin
         }
         catch (ParserConfigurationException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException("Parser configuration problem", e);
         }
         catch (SAXException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
         }
         catch (XPathExpressionException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
         }
-
-        return ImmutableMap.<String, Set<Violation>>of();
     }
 }

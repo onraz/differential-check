@@ -1,5 +1,7 @@
 package com.atlassian.dfcheck;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Violation
 {
     private final String fileName;
@@ -33,5 +35,16 @@ public class Violation
     public String getSource()
     {
         return source;
+    }
+
+    @Override
+    public String toString()
+    {
+        return new ToStringBuilder(this)
+                .append("fileName", fileName)
+                .append("lineNumber", lineNumber)
+                .append("message", message)
+                .append("source", source)
+                .toString();
     }
 }

@@ -5,7 +5,8 @@ import java.util.Set;
 
 import com.atlassian.dfcheck.diff.Diff;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class DfCheck
 {
@@ -15,7 +16,28 @@ public class DfCheck
     public DfCheck(Diff editDiff, Map<String, Set<Violation>> violations)
     {
         this.editDiff = editDiff;
-        this.fileViolations = ImmutableMap.copyOf(violations);
+        this.fileViolations = filterViolations(violations);
+    }
+
+    private Map<String, Set<Violation>> filterViolations(Map<String, Set<Violation>> violations)
+    {
+        Map<String, Set<Violation>> filteredFileViolations = Maps.newHashMap();
+        for (Map.Entry<String, Set<Violation>> entry : violations.entrySet())
+        {
+            Set<Violation> filteredViolations = Sets.newHashSet();
+            for (Violation violation : entry.getValue())
+            {
+                if (editDiff.isLineEdited(violation.getFileName(), violation.getLineNumber()))
+                {
+                    filteredViolations.add(violation);
+                }
+            }
+            if (!filteredViolations.isEmpty())
+            {
+                filteredFileViolations.put(entry.getKey(), filteredViolations);
+            }
+        }
+        return filteredFileViolations;
     }
 
     public boolean hasViolations()

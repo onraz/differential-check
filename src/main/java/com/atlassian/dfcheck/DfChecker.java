@@ -1,6 +1,8 @@
 package com.atlassian.dfcheck;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Set;
 
 import com.atlassian.dfcheck.checkstyle.CheckstyleDfPlugin;
 import com.atlassian.dfcheck.diff.Diff;
@@ -23,6 +25,12 @@ public class DfChecker extends AbstractMojo
     @Parameter( property = "dfcheck.target", defaultValue = "master" )
     private String target;
 
+    @Parameter( property = "dfcheck.checkstyle", defaultValue = "true" )
+    private Boolean checkstyleEnabled;
+
+    @Parameter( property = "dfcheck.checkstyle-severity", defaultValue = "error" )
+    private Boolean checkstyleSeverity;
+
     @Parameter( property = "dfcheck.failOnViolation", defaultValue = "true" )
     private Boolean failOnViolation;
 
@@ -39,9 +47,9 @@ public class DfChecker extends AbstractMojo
             source = RepositoryUtil.getLocalBranch();
         }
 
-        getLog().info("==========================================================================");
+        getLog().info("================================================================================");
         getLog().info("Differential Check between source: [" + source + "] and target: [" + target + "]");
-        getLog().info("==========================================================================");
+        getLog().info("================================================================================");
 
         Diff diff = new DiffCalculator(source, target).calculate();
 
@@ -52,20 +60,36 @@ public class DfChecker extends AbstractMojo
 
         if (diffCheck.hasViolations())
         {
-            getLog().error("Violations detected : " + diffCheck.getViolations().size());
-            if (failOnViolation)
-            {
-                throw new MojoFailureException("Differential Check detected violations, please see output");
-            }
+            processViolations(diffCheck);
         }
         else
         {
-            getLog().error("No violations detected by Differential Check.");
+            getLog().info("No violations detected by Differential Check.");
         }
 
         if (showDiff)
         {
             getLog().info(diff.toString());
+        }
+    }
+
+    private void processViolations(DfCheck diffCheck) throws MojoFailureException
+    {
+        Map<String, Set<Violation>> violations = diffCheck.getViolations();
+        getLog().error("Violations were introduced in branch: " + source);
+
+        for (Map.Entry<String, Set<Violation>> entry : violations.entrySet())
+        {
+            getLog().error("------------------------------------------------------------------------");
+            for (Violation violation : entry.getValue())
+            {
+                getLog().error("+ " + violation.getFileName() + ":" + violation.getLineNumber() + ": " + violation.getMessage() + " [" + violation.getSource() + "]");
+            }
+        }
+
+        if (failOnViolation)
+        {
+            throw new MojoFailureException("\nDifferential Check detected violations, please see output");
         }
     }
 }
