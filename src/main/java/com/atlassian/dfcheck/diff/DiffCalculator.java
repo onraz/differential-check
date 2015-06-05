@@ -38,8 +38,8 @@ public class DiffCalculator
             AbstractTreeIterator targetTree = prepareTreeParser(repository, targetBranchName);
 
             List<DiffEntry> diffEntries = new Git(repository).diff()
-                                            .setOldTree(sourceTree)
-                                            .setNewTree(targetTree)
+                                            .setOldTree(targetTree)
+                                            .setNewTree(sourceTree)
                                             .call();
             return new Diff(diffEntries);
         }

@@ -67,7 +67,7 @@
                 <artifactId>dfcheck-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <configuration>
-                    <target>master</target>
+                    <!--<target>master</target>-->
                 </configuration>
             </plugin>
         </plugins>
