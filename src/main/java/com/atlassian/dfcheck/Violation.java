@@ -1,5 +1,7 @@
 package com.atlassian.dfcheck;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Violation
@@ -46,5 +48,23 @@ public class Violation
                 .append("message", message)
                 .append("source", source)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Violation violation = (Violation) o;
+        return Objects.equals(fileName, violation.fileName) &&
+                Objects.equals(lineNumber, violation.lineNumber) &&
+                Objects.equals(message, violation.message) &&
+                Objects.equals(source, violation.source);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(fileName, lineNumber, message, source);
     }
 }

@@ -8,12 +8,12 @@ import com.atlassian.dfcheck.diff.Diff;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class DfCheck
+public class DfCheckResult
 {
     private final Map<String, Set<Violation>> fileViolations;
     private final Diff editDiff;
 
-    public DfCheck(Diff editDiff, Map<String, Set<Violation>> violations)
+    public DfCheckResult(Diff editDiff, Map<String, Set<Violation>> violations)
     {
         this.editDiff = editDiff;
         this.fileViolations = filterViolations(violations);

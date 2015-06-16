@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
-import com.atlassian.dfcheck.checkstyle.CheckstyleDfPlugin;
+import com.atlassian.dfcheck.plugins.DfPlugin;
+import com.atlassian.dfcheck.plugins.checkstyle.CheckstyleDfPlugin;
 import com.atlassian.dfcheck.diff.Diff;
 import com.atlassian.dfcheck.diff.DiffCalculator;
 import com.atlassian.dfcheck.util.RepositoryUtil;
@@ -55,7 +56,7 @@ public class DfChecker extends AbstractMojo
 
         DfPlugin checkstylePlugin = new CheckstyleDfPlugin();
 
-        DfCheck diffCheck = new DfCheck(diff, checkstylePlugin.parse(checkstyleReport));
+        DfCheckResult diffCheck = new DfCheckResult(diff, checkstylePlugin.parse(checkstyleReport));
 
 
         if (diffCheck.hasViolations())
@@ -73,7 +74,7 @@ public class DfChecker extends AbstractMojo
         }
     }
 
-    private void processViolations(DfCheck diffCheck) throws MojoFailureException
+    private void processViolations(DfCheckResult diffCheck) throws MojoFailureException
     {
         Map<String, Set<Violation>> violations = diffCheck.getViolations();
         getLog().error("Violations were introduced in branch: " + source);

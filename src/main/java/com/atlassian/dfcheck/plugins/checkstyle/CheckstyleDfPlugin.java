@@ -1,4 +1,4 @@
-package com.atlassian.dfcheck.checkstyle;
+package com.atlassian.dfcheck.plugins.checkstyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.atlassian.dfcheck.DfPlugin;
+import com.atlassian.dfcheck.plugins.DfPlugin;
 import com.atlassian.dfcheck.Violation;
 
 import com.google.common.collect.Maps;
@@ -95,5 +95,10 @@ public class CheckstyleDfPlugin implements DfPlugin
         {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public String getPluginId()
+    {
+        return "Checkstyle";
     }
 }
