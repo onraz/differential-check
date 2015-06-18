@@ -1,4 +1,4 @@
-package com.atlassian.dfcheck.diff;
+package com.atlassian.dfcheck.jgit;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,12 +22,12 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
  * Calculates and constructs a {@link SimpleEditDiff} between a source and target branch
  * in a git tree
  */
-public class DiffCalculator
+public class SimpleDiffCalculator implements com.atlassian.dfcheck.core.DiffCalculator
 {
     private final String sourceBranchName;
     private final String targetBranchName;
 
-    public DiffCalculator(String sourceBranchName, String targetBranchName)
+    public SimpleDiffCalculator(String sourceBranchName, String targetBranchName)
     {
         this.sourceBranchName = sourceBranchName;
         this.targetBranchName = targetBranchName;

@@ -1,6 +1,6 @@
 package com.atlassian.dfcheck.mojos;
 
-import com.atlassian.dfcheck.diff.DiffCalculator;
+import com.atlassian.dfcheck.jgit.SimpleDiffCalculator;
 import com.atlassian.dfcheck.util.RepositoryUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public abstract class AbstractDfMojo extends AbstractMojo
         getLog().info("Differential Check between source: [" + source + "] and target: [" + target + "]");
         getLog().info("================================================================================");
 
-        com.atlassian.dfcheck.core.Diff diff = new DiffCalculator(source, target).calculate();
+        com.atlassian.dfcheck.core.Diff diff = new SimpleDiffCalculator(source, target).calculate();
         if (!skip)
         {
             processDiff(diff);

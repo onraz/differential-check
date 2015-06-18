@@ -1,4 +1,4 @@
-package com.atlassian.dfcheck.diff;
+package com.atlassian.dfcheck.jgit;
 
 import java.util.List;
 import java.util.Map;
