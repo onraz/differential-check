@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!--
+    Checkstyle configuration for User Management, based on platform coding style.
+
+    See: 1. UM Design Conventions: https://extranet.atlassian.com/display/I/Design+Conventions%2C+Patterns+and+Anti-Patterns+Discussion
+         2. Platform Coding Guidelines: https://ecosystem.atlassian.net/wiki/display/AG/Coding+Guidelines
+
+    For further configuration and explanation of the checks please refer to: http://checkstyle.sourceforge.net/checks.html
+ -->
+
+<module name = "Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Checks that there are no tab characters ('\t') in the source code. -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+
+    <!-- Java Checks -->
+    <module name="TreeWalker">
+
+        <!--============ Section 1: White Space ================-->
+
+        <!-- Generic type parameters e.g. <K, V> must have adequate whitespace -->
+        <module name="GenericWhitespace"/>
+
+        <!-- Maximum line length to promote readability -->
+        <module name="LineLength">
+            <property name="max" value="165"/>
+        </module>
+
+        <!--Checks line wrapping with separators.
+            string
+                .isEmpty();
+            meth(arg1,
+                arg2);
+        -->
+        <module name="SeparatorWrap">
+            <property name="tokens" value="DOT"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="tokens" value="COMMA"/>
+            <property name="option" value="EOL"/>
+        </module>
+
+        <!-- operators must be on new line when wrapped, except concatenation:
+            String s = summary +
+                        footer;
+        -->
+        <module name="OperatorWrap">
+            <property name="tokens" value="PLUS"/>
+            <property name="option" value="eol"/>
+        </module>
+
+        <!--Checks for empty line separators after header, package, all import declarations, fields, constructors,
+            methods, nested classes, static initializers and instance initializers. -->
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+
+        <!-- Checks that a token is followed by whitespace. -->
+        <module name="WhitespaceAfter"/>
+        <!-- Checks that a token is surrounded by whitespace -->
+        <module name="WhitespaceAround"/>
+
+        <!-- Need braces unless it is a single line statement (typically used in equals, e..g if (other == null) return false; -->
+        <module name="NeedBraces">
+            <property name="allowSingleLineStatement" value="true" />
+        </module>
+
+        <!-- Platform Coding Style Curly Brace Settings
+        try(..)
+        { <- Left Curly New Line
+            ...
+        } <- RightCurly Alone
+        -->
+        <module name="LeftCurly">
+            <property name="option" value="nl" />
+        </module>
+
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+        </module>
+
+        <!-- Empty blocks are code smell -->
+        <module name="EmptyBlock"/>
+        <module name="MethodParamPad">
+            <property name="tokens" value="CTOR_DEF, METHOD_DEF, METHOD_CALL"/>
+            <property name="option" value="nospace"/>
+        </module>
+        <module name="AvoidNestedBlocks"/>
+
+        <!-- Restricts the number of statements per line to one. e.g. x = 1; y = 2; -->
+        <module name="OneStatementPerLine"/>
+
+        <!-- Checks that each variable declaration is in its own statement and on its own line. -->
+        <module name="MultipleVariableDeclarations"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+
+        <!--================================================-->
+        <!--============ Section 2: Imports ================-->
+        <!--================================================-->
+
+        <module name="UnusedImports"/>
+        <!-- Platform Style Forbids Star Import -->
+        <module name="AvoidStarImport"/>
+
+        <!-- prevents certain packages to be used -->
+        <module name="IllegalImport">
+            <!-- Sun packages are not portable, avoid the usage of jaxb library -->
+            <property name="illegalPkgs" value="sun, javax.annotation.Nonnull, javax.xml.bind"/>
+        </module>
+
+        <!-- Ensures there is a package declaration for every class -->
+        <module name="PackageDeclaration"/>
+
+        <!-- Checks for redundant import statements. An import statement is considered redundant if:
+        It is a duplicate of another import. This is, when a class is imported more than once.
+        The class imported is from the java.lang package, e.g. importing java.lang.String.
+        The class imported is from the same package.
+        -->
+        <module name="RedundantImport"/>
+
+        <!-- import order based on platform order, note that grouping is also applied on static imports -->
+        <module name="ImportOrder">
+            <property name="groups" value="java,javax,com.atlassian,com,org"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="caseSensitive" value="true"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+            <property name="option" value="bottom"/>
+        </module>
+
+        <!--================================================-->
+        <!--============ Section 3: Code / Statements =======-->
+        <!--================================================-->
+        <module name="RedundantModifier"/>
+        <module name="EmptyStatement"/>
+        <module name="SimplifyBooleanExpression"/>
+        <!-- Array braces belong to type e.g. String[] args vs. String args[] -->
+        <module name="ArrayTypeStyle"/>
+
+        <!-- Switch needs a default -->
+        <module name="MissingSwitchDefault"/>
+        <module name="DefaultComesLast"/>
+
+        <!-- Java Modifier Order
+                public
+                protected
+                private
+                abstract
+                static
+                final
+                transient
+                volatile
+                synchronized
+                native
+                strictfp
+        -->
+        <module name="ModifierOrder"/>
+
+
+        <module name="AbbreviationAsWordInName">
+            <!-- amount of capital letters in abbreviations, value of 1 forces camel case -->
+            <property name="allowedAbbreviations" value="JWS"/>
+            <property name="allowedAbbreviationLength" value="1"/>
+        </module>
+
+        <!-- Constant names use CONSTANT_CASE: all uppercase letters, with words separated by underscores
+            In addition, allow log or logger to be valid names -->
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*|log|logger$"/>
+        </module>
+
+        <!-- Annotation -->
+        <module name="MissingDeprecated"/>
+        <module name="AnnotationUseStyle">
+            <property name="elementStyle" value="compact"/>
+        </module>
+
+        <!-- Must have @Override annotation for overridden method -->
+        <module name="MissingOverride"/>
+        <module name="PackageAnnotation"/>
+        <module name="AnnotationLocation">
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+        </module>
+        <module name="AnnotationLocation">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="allowSamelineMultipleAnnotations" value="true"/>
+        </module>
+
+
+        <!-- Javadoc -->
+        <module name="JavadocTagContinuationIndentation"/>
+        <module name="JavadocParagraph"/>
+        <module name="NonEmptyAtclauseDescription"/>
+
+        <!-- Follow this order: @author, @version, @param, @return, @throws, @exception, @see, @since, @serial, @serialField, @serialData, @deprecated -->
+        <module name="AtclauseOrder"/>
+
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="minLineCount" value="2"/>
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+
+        <module name="SingleLineJavadoc"/>
+
+        <!-- ensure punctuation in javadoc -->
+        <module name="JavadocStyle"/>
+
+        <!-- Checks that there is one blank line between each of two paragraphs and one blank line before the at-clauses block if it is present.
+             Each paragraph but the first must have <p> immediately before the first word, with no space after. -->
+        <module name="JavadocParagraph"/>
+
+        <!--================================================-->
+        <!--============ Section 4: Code Quality     =======-->
+        <!--================================================-->
+
+        <module name="EqualsHashCode"/>
+        <module name="CovariantEquals"/>
+        <module name="EqualsAvoidNull"/>
+        <module name="StringLiteralEquality"/>
+        <module name="NoClone"/>
+        <module name="NoFinalizer"/>
+
+        <module name="IllegalInstantiation"/>
+        <module name="IllegalCatch"/>
+        <module name="IllegalThrows"/>
+        <module name="EmptyCatchBlock"/>
+
+        <!-- Use the following convention:
+            1. Static (class) variables. First the public variables, then protected, then package level, and then private.
+            2. Instance variables. First the public variables, then protected, then package level, and then private.
+            3. Constructors
+            4. Methods
+         -->
+        <module name="DeclarationOrder"/>
+        <module name="ModifiedControlVariableCheck"/>
+        <module name="VisibilityModifier"/>
+        <module name="ParameterAssignment"/>
+        <module name="ReturnCount"/>
+        <module name="ExplicitInitialization"/>
+        <module name="StringLiteralEquality"/>
+        <module name="MultipleStringLiterals">
+            <property name="allowedDuplicates" value="2" />
+        </module>
+        <module name="MethodCount">
+            <property name="maxTotal" value="20"/>
+        </module>
+
+        <module name="MethodLength">
+            <property name="max" value="60"/>
+        </module>
+
+        <!-- Checks for the number of defined types at the "outer" level. -->
+        <module name="OuterTypeNumber"/>
+
+        <!-- Checks that a class which has only private constructors is declared as final. -->
+        <module name="FinalClass"/>
+
+        <!-- Implements Joshua Bloch, Effective Java, Item 17 - Use Interfaces only to define types.-->
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+
+        <module name="ThrowsCount">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="InnerTypeLast"/>
+        <module name="InnerAssignment"/>
+        <module name="OneTopLevelClass"/>
+
+        <!-- See Software Quality Metrics http://checkstyle.sourceforge.net/config_metrics.html -->
+        <module name="JavaNCSS"/>
+        <module name="NPathComplexity"/>
+        <module name="BooleanExpressionComplexity"/>
+        <module name="CyclomaticComplexity"/>
+        <module name="ClassDataAbstractionCoupling">
+            <property name="max" value="8"/>
+        </module>
+        <module name="ClassFanOutComplexity"/>
+
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+        </module>
+    </module>
+</module>

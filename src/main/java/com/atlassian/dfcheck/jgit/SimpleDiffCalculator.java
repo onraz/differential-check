@@ -1,8 +1,9 @@
-package com.atlassian.dfcheck.diff;
+package com.atlassian.dfcheck.jgit;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.atlassian.dfcheck.core.Diff;
 import com.atlassian.dfcheck.util.RepositoryUtil;
 
 import org.eclipse.jgit.api.Git;
@@ -17,12 +18,16 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
-public class DiffCalculator
+/**
+ * Calculates and constructs a {@link SimpleEditDiff} between a source and target branch
+ * in a git tree
+ */
+public class SimpleDiffCalculator implements com.atlassian.dfcheck.core.DiffCalculator
 {
     private final String sourceBranchName;
     private final String targetBranchName;
 
-    public DiffCalculator(String sourceBranchName, String targetBranchName)
+    public SimpleDiffCalculator(String sourceBranchName, String targetBranchName)
     {
         this.sourceBranchName = sourceBranchName;
         this.targetBranchName = targetBranchName;
@@ -30,18 +35,19 @@ public class DiffCalculator
 
     public Diff calculate()
     {
-        Repository repository = RepositoryUtil.getLocalRepository();
-        // the diff works on TreeIterators, we prepare two for the two branches
         try
         {
+            Repository repository = RepositoryUtil.getLocalRepository();
+
+            // the diff works on TreeIterators, we prepare two for the two branches
             AbstractTreeIterator sourceTree = prepareTreeParser(repository, sourceBranchName);
             AbstractTreeIterator targetTree = prepareTreeParser(repository, targetBranchName);
 
             List<DiffEntry> diffEntries = new Git(repository).diff()
-                                            .setOldTree(sourceTree)
-                                            .setNewTree(targetTree)
+                                            .setOldTree(targetTree)
+                                            .setNewTree(sourceTree)
                                             .call();
-            return new Diff(diffEntries);
+            return new SimpleEditDiff(diffEntries);
         }
         catch (IOException e)
         {

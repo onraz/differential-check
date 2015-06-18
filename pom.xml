@@ -8,13 +8,49 @@
     <version>1.0-SNAPSHOT</version>
 
     <packaging>maven-plugin</packaging>
-    <url>https://extranet.atlassian.net</url>
+    <url>https://bitbucket.org/rshahriar/differential-check</url>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Atlassian</name>
+        <url>https://www.atlassian.com/</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:ssh://git@bitbucket.org/rshahriar/differential-check.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.org/rshahriar/differential-check.git</developerConnection>
+        <url>https://bitbucket.org/rshahriar/differential-check</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
             <version>3.7.1.201504261725-r</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
         </dependency>
 
         <dependency>
@@ -47,16 +83,57 @@
 
     </dependencies>
 
-    <!-- including the plugin for test usage -->
     <build>
         <plugins>
+
+            <!-- including the plugin for dogfooding -->
             <plugin>
                 <groupId>com.atlassian.dfcheck</groupId>
                 <artifactId>dfcheck-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <configuration>
-                    <target>master</target>
+                    <!--<target>master</target>-->
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>diff-check</id>
+                        <goals>
+                            <goal>dfcheck</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- checkstyle configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.15</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>6.6</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle/checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+
+                    <logViolationsToConsole>false</logViolationsToConsole>
+                    <consoleOutput>false</consoleOutput>
+                    <failOnViolation>false</failOnViolation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

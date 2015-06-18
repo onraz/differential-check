@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+    <!-- Ignore javadoc for tests -->
+    <suppress checks="Javadoc.*" files="/src/test/java/.*.java"/>
+
+    <!-- Ignore string literal repetitions for tests -->
+    <suppress checks="MultipleStringLiterals" files="/src/test/java/.*.java"/>
+
+    <!-- Ignore line length check for tests, as test method names can get quite long -->
+    <suppress checks="LineLength" files="/src/test/java/.*.java"/>
+
+</suppressions>
