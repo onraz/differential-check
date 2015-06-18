@@ -12,8 +12,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.atlassian.dfcheck.plugins.DfPlugin;
-import com.atlassian.dfcheck.Violation;
+import com.atlassian.dfcheck.core.DfPlugin;
+import com.atlassian.dfcheck.core.Violation;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -23,6 +23,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Checkstyle plugin that translates checkstyle reports to violations
+ */
 public class CheckstyleDfPlugin implements DfPlugin
 {
     /**
@@ -69,7 +72,7 @@ public class CheckstyleDfPlugin implements DfPlugin
                         String message = error.getAttributes().getNamedItem("message").getNodeValue();
                         String source = error.getAttributes().getNamedItem("source").getNodeValue();
 
-                        styleViolations.add(new Violation(fileName, linenum, message, "Checkstyle:" + source));
+                        styleViolations.add(new Violation(fileName, linenum, message, source, getPluginId()));
                     }
 
                     fileViolations.put(fileName, styleViolations);

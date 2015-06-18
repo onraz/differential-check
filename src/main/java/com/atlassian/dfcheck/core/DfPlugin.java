@@ -1,10 +1,8 @@
-package com.atlassian.dfcheck.plugins;
+package com.atlassian.dfcheck.core;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
-
-import com.atlassian.dfcheck.Violation;
 
 /**
  * A Differential check plugin that parses a plugin report and generates violations.

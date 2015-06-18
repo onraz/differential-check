@@ -1,4 +1,4 @@
-package com.atlassian.dfcheck.plugins.findbugs;
+package com.atlassian.dfcheck.plugins.pmd;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.atlassian.dfcheck.core.DfPlugin;
 import com.atlassian.dfcheck.core.Violation;
+import com.atlassian.dfcheck.core.DfPlugin;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -24,12 +24,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Findbugs plugin that translates findbugs reports to violations
+ * PMD plugin that translates PMD reports to violations
  */
-public class FindbugsDfPlugin implements DfPlugin
+public class PmdDfPlugin implements DfPlugin
 {
     /**
-     * Parse a FindBugsSummary report in the following format:
+     * Parse a PMD Report report in the following format:
      *
      *   <BugCollection ...>
      *       <FindBugsSummary total_bugs='1'>
@@ -38,15 +38,15 @@ public class FindbugsDfPlugin implements DfPlugin
      *       </FindBugsSummary>
      *   </BugCollection>
      *
-     * @param findBugsSummary the checkstyle report file in above format
+     * @param pmdReport the checkstyle report file in above format
      * @return the parsed check result of the report
      */
-    public Map<String, Set<Violation>> parse(File findBugsSummary)
+    public Map<String, Set<Violation>> parse(File pmdReport)
     {
         try
         {
             Map<String, Set<Violation>> fileViolations = Maps.newHashMap();
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(findBugsSummary);
+            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdReport);
             XPath xpath = XPathFactory.newInstance().newXPath();
 
             NodeList fileNodes = document.getDocumentElement().getElementsByTagName("FileStats");

@@ -10,6 +10,10 @@
     <packaging>maven-plugin</packaging>
     <url>https://extranet.atlassian.net</url>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
@@ -59,9 +63,10 @@
 
     </dependencies>
 
-    <!-- including the plugin for test usage -->
     <build>
         <plugins>
+
+            <!-- including the plugin for dogfooding -->
             <plugin>
                 <groupId>com.atlassian.dfcheck</groupId>
                 <artifactId>dfcheck-maven-plugin</artifactId>
@@ -69,6 +74,46 @@
                 <configuration>
                     <!--<target>master</target>-->
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>diff-check</id>
+                        <goals>
+                            <goal>dfcheck</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- checkstyle configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.15</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>6.6</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle/checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+
+                    <logViolationsToConsole>false</logViolationsToConsole>
+                    <consoleOutput>false</consoleOutput>
+                    <failOnViolation>false</failOnViolation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

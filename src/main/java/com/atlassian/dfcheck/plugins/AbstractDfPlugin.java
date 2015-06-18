@@ -12,7 +12,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.atlassian.dfcheck.Violation;
+import com.atlassian.dfcheck.core.DfPlugin;
+import com.atlassian.dfcheck.core.Violation;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;

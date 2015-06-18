@@ -8,30 +8,24 @@ import org.eclipse.jgit.diff.DiffEntry;
 
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
-public class Diff
+/**
+ * A Diff that only retains edits (i.e. modifications and additions, but not deletions)
+ */
+public class SimpleEditDiff implements com.atlassian.dfcheck.core.Diff
 {
-    private final Map<String, List<Range<Integer>>> editDiffs;
-//    private final List<DiffEntry> diffEntryList;
+    private final Map<String, List<Range<Integer>>> edits;
 
-    protected Diff(List<DiffEntry> diffEntryList)
+    protected SimpleEditDiff(List<DiffEntry> diffEntryList)
     {
-        this.editDiffs = FileEditDiffCollector.collectEdits(diffEntryList);
-//        this.diffEntryList = diffEntryList;
+        this.edits = FileEditDiffCollector.collectEdits(diffEntryList);
     }
 
-    /**
-     * Determines if a file has an edited line that was either added or changed but not deleted.
-     *
-     * @param fileName the file
-     * @param line the line number
-     * @return true if the line has been changed
-     */
     public boolean isLineEdited(String fileName, String line)
     {
-        if (editDiffs.containsKey(fileName))
+        if (edits.containsKey(fileName))
         {
             Integer lineNumber = toInt(line);
-            for (Range<Integer> range : editDiffs.get(fileName))
+            for (Range<Integer> range : edits.get(fileName))
             {
                 if (range.contains(lineNumber))
                 {
@@ -43,15 +37,9 @@ public class Diff
         return false;
     }
 
-    @Override
-    public String toString()
+    public Map<String, List<Range<Integer>>> getEdits()
     {
-        StringBuilder sb = new StringBuilder("\n");
-        for (Map.Entry<String, List<Range<Integer>>> entry : editDiffs.entrySet())
-        {
-            sb.append(entry.getKey() + "-->" + entry.getValue() + "\n");
-        }
-        return sb.toString();
+        return edits;
     }
 
     //    @Override

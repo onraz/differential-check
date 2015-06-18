@@ -19,6 +19,10 @@ import org.apache.commons.lang3.Range;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 
+/**
+ * Collects only the diff results that were introduced as per edits
+ * Internal use only by {@link SimpleEditDiff}
+ */
 class FileEditDiffCollector
 {
     /**
@@ -27,8 +31,24 @@ class FileEditDiffCollector
     private static final Set<DiffEntry.ChangeType> EDITED_CHANGETYPE = Sets.immutableEnumSet(DiffEntry.ChangeType.ADD, DiffEntry.ChangeType.MODIFY);
 
 
+    /**
+     * The meaning of the file name can differ depending on the semantic meaning of the diff
+     * <ul>
+     *      <li><i> file add    </i>:   always the file being created   </li>
+     *      <li><i> file modify </i>:   always the existing path        </li>
+     *      <li><i> file delete </i>:   always <code>/dev/null</code>   </li>
+     *      <li><i> file copy   </i>:   destination file the copy ends up at</li>
+     *      <li><i> file rename </i>:   destination file the rename ends up at</li>
+     * </ul>
+     *
+     * @param diffEntries diff be
+     * @return  only the diff results that were introduced as per edits
+    */
     public static Map<String, List<Range<Integer>>> collectEdits(List<DiffEntry> diffEntries)
     {
+        // Get the root directory of this repository
+        String rootDir = RepositoryUtil.getLocalRepository().getDirectory().getParent();
+
         // A map of file names -> edited lines
         Map<String, List<Range<Integer>>> fileEdits = Maps.newHashMap();
 
@@ -36,7 +56,7 @@ class FileEditDiffCollector
         {
             if (EDITED_CHANGETYPE.contains(diffEntry.getChangeType()))
             {
-                fileEdits.put(diffEntry.getNewPath(), collectEditedLines(diffEntry));
+                fileEdits.put(rootDir + "/" + diffEntry.getNewPath(), collectEditedLines(diffEntry));
             }
         }
 
