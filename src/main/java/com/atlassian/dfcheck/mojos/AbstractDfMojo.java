@@ -24,6 +24,9 @@ public abstract class AbstractDfMojo extends AbstractMojo
     @Parameter( property = "dfcheck.skip", defaultValue = "false" )
     protected boolean skip;
 
+    @Parameter( property = "dfcheck.readUncommitted", defaultValue = "true" )
+    protected boolean readUncommitted;
+
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         if (StringUtils.isBlank(source))
@@ -35,7 +38,7 @@ public abstract class AbstractDfMojo extends AbstractMojo
         getLog().info("Differential Check between source: [" + source + "] and target: [" + target + "]");
         getLog().info("================================================================================");
 
-        com.atlassian.dfcheck.core.Diff diff = new SimpleDiffCalculator(source, target).calculate();
+        com.atlassian.dfcheck.core.Diff diff = new SimpleDiffCalculator(source, target, readUncommitted).calculate();
         if (!skip)
         {
             processDiff(diff);

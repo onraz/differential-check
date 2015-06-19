@@ -17,6 +17,7 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
 
 /**
  * Calculates and constructs a {@link SimpleEditDiff} between a source and target branch
@@ -26,11 +27,13 @@ public class SimpleDiffCalculator implements com.atlassian.dfcheck.core.DiffCalc
 {
     private final String sourceBranchName;
     private final String targetBranchName;
+    private final boolean readUncommited;
 
-    public SimpleDiffCalculator(String sourceBranchName, String targetBranchName)
+    public SimpleDiffCalculator(String sourceBranchName, String targetBranchName, boolean readUncommited)
     {
         this.sourceBranchName = sourceBranchName;
         this.targetBranchName = targetBranchName;
+        this.readUncommited = readUncommited;
     }
 
     public Diff calculate()
@@ -40,7 +43,8 @@ public class SimpleDiffCalculator implements com.atlassian.dfcheck.core.DiffCalc
             Repository repository = RepositoryUtil.getLocalRepository();
 
             // the diff works on TreeIterators, we prepare two for the two branches
-            AbstractTreeIterator sourceTree = prepareTreeParser(repository, sourceBranchName);
+            AbstractTreeIterator sourceTree = readUncommited ? new FileTreeIterator(repository)
+                                                             : prepareTreeParser(repository, sourceBranchName);
             AbstractTreeIterator targetTree = prepareTreeParser(repository, targetBranchName);
 
             List<DiffEntry> diffEntries = new Git(repository).diff()

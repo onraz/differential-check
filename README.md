@@ -42,12 +42,14 @@ The plugin can be configured using the `<configuration>` element inside the plug
 can also be passed as command line parameters e.g. `-Ddfcheck.skip=true`
 
 - `failOnViolation` - Fail the build if there are violations, `true|false` Default: `true`
-- `skip` - Skip execution of the plugin. `true|false`, Default: `false`
+- `readUncommitted` - Read uncommitted changes (by default), set to `false` if only committed changes must be tracked `true|false`, Default: `true`
 - `mode` - How to calculate the effective diff, can be: `add|mod|edit`, Default: `edit`
     - `add` mode: only lines that were added will be checked.
     - `mod` mode: only lines that were modified will be checked.
     - `edit` mode (default): combination of `add` and `mod`, both additions and modifications are included
+
 - `consoleOutput` - whether violations should be printed in console, `true|false` Default: `true`  
+- `skip` - Skip execution of the plugin. `true|false`, Default: `false`
 
 ### Checkstyle
 
