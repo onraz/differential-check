@@ -1,12 +1,71 @@
 # Differential Check for Maven
 
-A framework and maven plugin for applying differential checks or rules on git based projects.
+A framework and maven plugin for applying differential checks or rules on projects using git.
 A differential check determines violations present in the diff between a given source and target branch.
 Only edits are checked for violations, i.e. lines that were added or modified but not deleted.
 
 This can be useful to enforce code quality tools as part of git pull-request workflow. This tool encourages 
 developers to improve new and existing design, one pull-request/branch at a time. Combined with the git-ratchet tool, which takes more of a global approach for quality improvement, existing 
 codebase can be improved iteratively.
+
+
+## Usage
+
+DfCheck maven plugin can be added to the project's `pom.xml` as follows:
+                
+                <build>
+                    <plugins>
+                        ...
+                        <plugin>
+                            <groupId>com.atlassian.dfcheck</groupId>
+                            <artifactId>dfcheck-maven-plugin</artifactId>
+                            <version>1.0</version>
+                            <executions>
+                                <execution>
+                                    <id>diff-check</id>
+                                    <goals>
+                                        <goal>dfcheck</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        ...
+                    </plugins>
+                </build>
+                
+By default DfCheck binds itself to the `VERIFY` Lifecycle Phase of maven. It can be customised via 
+the `<execution>` element.
+    
+## Configuration
+
+The plugin can be configured using the `<configuration>` element inside the plugin declaration. These
+can also be passed as command line parameters e.g. `-Ddfcheck.skip=true`
+
+- `failOnViolation` - Fail the build if there are violations, `true|false` Default: `true`
+- `skip` - Skip execution of the plugin. `true|false`, Default: `false`
+- `mode` - How to calculate the effective diff, can be: `add|mod|edit`, Default: `edit`
+    - `add` mode: only lines that were added will be checked.
+    - `mod` mode: only lines that were modified will be checked.
+    - `edit` mode (default): combination of `add` and `mod`, both additions and modifications are included
+- `consoleOutput` - whether violations should be printed in console, `true|false` Default: `true`  
+
+### Checkstyle
+
+- `checkstyleEnabled` - whether checkstyle can raise violations `true|false` Default: `true`
+- `checkstyleSeverity` - the severity that is considered a violation `warn|error` Default: `error`
+- `checkstyleReport` - the directory where checkstyle report is generated. Default: `${project.build.directory}/checkstyle-result.xml`
+
+### PMD
+
+- `pmdEnabled` - whether PMD can raise violations `true|false` Default: `false`
+- `pmdSeverity` - the severity that is considered a violation `warn|error` Default: `error`
+- `pmdReport` - the directory where PMD report is generated. 
+
+### FindBugs
+- `findBugsEnabled` - whether findbugs can raise violations `true|false` Default: `false`
+- `findBugsSeverity` - the severity that is considered a violation `warn|error` Default: `error`
+- `findBugsReport` - the directory where findbugs report is generated. 
+
 
 ## Running Differential Check
 
